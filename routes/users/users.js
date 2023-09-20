@@ -11,8 +11,6 @@ const headers = {
   'Content-Type': "application/json",
 };
 
-
-
 router.post("/sendotp", async (req, res) => {
   try {
     const data = {
@@ -25,27 +23,40 @@ router.post("/sendotp", async (req, res) => {
     const resp = await axios.post(`${url}/messages`, data, { headers });
     res.json(resp.data)
   }
-   catch (error) {
+  catch (error) {
     console.log(error.message);
     res.status(500).json({ error })
   }
 })
+
+// router.post("/saveuser", async (req, res) => {
+//   try {
+//     const email = req.body.email.toLowerCase()
+//     const newUser = new catalogSchema({ ...req.body, email })
+//     await newUser.save()
+//     res.status(201).json({ status: true, msg: "Saved Successfully" })
+//   } catch (error) {
+//     console.log("qqqqqqq ", error);
+//     res.status(500).json({ error })
+//   }
+// })
 router.post("/saveuser", async (req, res) => {
   try {
-    const { name, phone, pincode } = req.body
     const email = req.body.email.toLowerCase()
-
-    const newUser = new catalogSchema({
-      name,
-      phone,
-      email,
-      pincode
-    })
+    const newUser = new catalogSchema({ ...req.body, email })
     await newUser.save()
     res.status(201).json({ status: true, msg: "Saved Successfully" })
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error })
+    if (error.name === "ValidationError") {
+      const validationErrors = [];
+      for (const field in error.errors) {
+        validationErrors.push(error.errors[field].message);
+      }
+      res.json({ status: false, error:validationErrors });
+    } else {
+      console.error("Error: ", error);
+      res.status(500).json({ status: false, error: "Internal Server Error" });
+    }
   }
 })
 
