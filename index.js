@@ -6,7 +6,15 @@ const usersRouter = require("./routes/users/users")
 
 const port = 4000
 connectDb()
-app.use(cors())
+// app.use(cors())
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json())
 app.use("/", usersRouter)
 

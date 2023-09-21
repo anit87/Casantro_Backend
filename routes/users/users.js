@@ -2,8 +2,13 @@ const express = require("express")
 const axios = require("axios")
 const mongoose = require("mongoose")
 const router = express.Router()
+
+const cookieParser = require('cookie-parser');
+router.use(cookieParser());
 require("dotenv").config()
 const catalogSchema = require("../../models/forms/catalog")
+const {generateOTP} = require("../../utils/functions")
+
 
 const url = process.env.Kaleyra_URL
 const headers = {
@@ -13,14 +18,17 @@ const headers = {
 
 router.post("/sendotp", async (req, res) => {
   try {
+    const otp =await generateOTP()
     const data = {
-      to: req.body.phone,
+      to: `+91${req.body.phone}`,
       sender: "LIVSPC",
       type: 'OTP',
-      body: "Dear Customer, your OTP (One Time Password) for the Verification from Kaleyra",
-      source: "API"
+      body: `Hello there, ${otp} is your Casantro account verification code. Use this to complete the sign up -Livspace`,
+      source: "API",
+      template_id: "1107169525553414311"
     };
     const resp = await axios.post(`${url}/messages`, data, { headers });
+    res.cookie('otp', otp, { maxAge: 900000 });
     res.json(resp.data)
   }
   catch (error) {
@@ -39,6 +47,7 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 router.post("/saveuser", async (req, res) => {
   try {
     const email = req.body.email.toLowerCase()
