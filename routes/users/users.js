@@ -29,17 +29,16 @@ router.post("/sendotp", async (req, res) => {
   }
 })
 
-// router.post("/saveuser", async (req, res) => {
-//   try {
-//     const email = req.body.email.toLowerCase()
-//     const newUser = new catalogSchema({ ...req.body, email })
-//     await newUser.save()
-//     res.status(201).json({ status: true, msg: "Saved Successfully" })
-//   } catch (error) {
-//     console.log("qqqqqqq ", error);
-//     res.status(500).json({ error })
-//   }
-// })
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await catalogSchema.find({});
+    res.json({ status: true, data: users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 router.post("/saveuser", async (req, res) => {
   try {
     const email = req.body.email.toLowerCase()
@@ -52,7 +51,7 @@ router.post("/saveuser", async (req, res) => {
       for (const field in error.errors) {
         validationErrors.push(error.errors[field].message);
       }
-      res.json({ status: false, error:validationErrors });
+      res.json({ status: false, error: validationErrors });
     } else {
       console.error("Error: ", error);
       res.status(500).json({ status: false, error: "Internal Server Error" });
