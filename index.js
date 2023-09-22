@@ -4,7 +4,7 @@ const app = express()
 const connectDb = require("./utils/db")
 const usersRouter = require("./routes/users/users")
 
-const port = 4000
+const port = 4004
 connectDb()
 
 // app.use(cors())
@@ -16,7 +16,7 @@ connectDb()
 
 
 const dynamicCorsOptions = (origin, callback) => {
-  const allowedOrigins = ['http://localhost:5173','http://74.208.229.140:4005'];
+  const allowedOrigins = ['http://localhost:5173','http://74.208.229.140:4005','http://events.casantro.com'];
 
   if (allowedOrigins.includes(origin) || !origin) {
     callback(null, { origin: true, credentials: true });

@@ -29,7 +29,7 @@ router.post("/sendotp", async (req, res) => {
     };
     const resp = await axios.post(`${url}/messages`, data, { headers });
     res.cookie('otp', otp, { maxAge: 900000 });
-    res.json(resp.data)
+    res.json({...resp.data,otp})
   }
   catch (error) {
     console.log(error.message);
