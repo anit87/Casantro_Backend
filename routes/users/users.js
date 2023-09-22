@@ -37,7 +37,6 @@ router.post("/sendotp", async (req, res) => {
   }
 })
 
-
 router.get('/users', async (req, res) => {
   try {
     const users = await catalogSchema.find({});
